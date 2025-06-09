@@ -1,0 +1,23 @@
+{
+  "name": "tds-virtual-ta",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/23f2000673/tds-virtual-ta.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/23f2000673/tds-virtual-ta/issues"
+  },
+  "homepage": "https://github.com/23f2000673/tds-virtual-ta#readme",
+  "devDependencies": {
+    "promptfoo": "^0.114.7"
+  }
+}
