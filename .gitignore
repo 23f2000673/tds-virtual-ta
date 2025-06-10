@@ -1,0 +1,9 @@
+# Python
+venv/
+__pycache__/
+
+# Generated data
+scraped_posts.json
+
+# Node
+node_modules/

@@ -1,26 +1,39 @@
-import httpx, json, os
+import os
+import httpx
+import json
 
 BASE = "https://discourse.onlinedegree.iitm.ac.in"
-KEY = os.environ["DISCOURSE_API_KEY"]
-USER = os.environ.get("DISCOURSE_API_USER","system")
+client = httpx.Client()
 
-def fetch_topic(topic_id):
-    all_posts = []
-    page = 1
+# Cookie‐based auth (export these tomorrow)
+client.cookies.set(
+    "_forum_session",
+    os.getenv("DISCOURSE_SESSION_COOKIE", ""),
+    domain="discourse.onlinedegree.iitm.ac.in",
+)
+client.cookies.set(
+    "_t",
+    os.getenv("DISCOURSE_T_COOKIE", ""),
+    domain="discourse.onlinedegree.iitm.ac.in",
+)
+
+
+def fetch_topic(topic_id: int) -> list[dict]:
+    posts, page = [], 1
     while True:
-        r = httpx.get(
-            f"{BASE}/t/{topic_id}.json",
-            params={"api_key":KEY,"api_username":USER,"page":page}
-        )
-        data = r.json()
-        posts = data["post_stream"]["posts"]
-        all_posts += posts
-        if len(posts) < 30: break
+        r = client.get(f"{BASE}/t/{topic_id}.json", params={"page": page})
+        r.raise_for_status()
+        batch = r.json()["post_stream"]["posts"]
+        posts.extend(batch)
+        if len(batch) < 30:
+            break
         page += 1
-    return all_posts
+    return posts
 
-if __name__=="__main__":
-    # replace <TOPIC_ID> with your actual course-topic ID
-    posts = fetch_topic(<YOUR_COURSE_TOPIC_ID>)
-    with open("scraped_posts.json","w") as f:
-        json.dump(posts, f, indent=2)
+
+if __name__ == "__main__":
+    # TODO: replace 12345 with your TDS topic ID
+    all_posts = fetch_topic(12345)
+    with open("scraped_posts.json", "w") as f:
+        json.dump(all_posts, f, indent=2)
+    print(f"Saved {len(all_posts)} posts to scraped_posts.json")

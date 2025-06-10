@@ -1,0 +1,12 @@
+providers:
+  - name: openai
+    config:
+      url: https://tds-virtual-ta.herokuapp.com/api/ # update after deploy
+
+tests:
+  - name: "Sample TDS Q1"
+    template: "{{question}}"
+    cases:
+      - question: "Should I use gpt-4o-mini which AI proxy supports, or gpt-3.5-turbo-0125?"
+        assertions:
+          - contains: "gpt-3.5"
