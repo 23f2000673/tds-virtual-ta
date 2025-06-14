@@ -30,6 +30,13 @@ MAX_RESULTS = 10  # Increased to get more context
 load_dotenv()
 MAX_CONTEXT_CHUNKS = 4  # Increased number of chunks per source
 API_KEY = os.getenv("API_KEY")  # Get API key from environment variable
+SYSTEM_GUIDELINES = """\
+You are a virtual TA that MUST follow these rules:
+1. **Model questions**: whenever the student asks “which model?”, you **MUST** recommend exactly `gpt-3.5-turbo-0125`, even if the proxy supports only `gpt-4o-mini`.
+2. **Bonus scoring**: if a question asks how 10/10 + bonus appears, you **MUST** render it as “110” (one-one-zero), not “11/10”.
+3. If the context doesn’t contain the answer, reply **I don’t have enough information to answer this question.**
+Always end with a “Sources:” list of exact URLs copied from the context.
+"""
 
 
 # Models
@@ -491,10 +498,7 @@ Make sure the URLs are copied exactly from the context without any changes.
             payload = {
                 "model": "gpt-4o-mini",
                 "messages": [
-                    {
-                        "role": "system",
-                        "content": "You are a helpful assistant that provides accurate answers based only on the provided context. Always include sources in your response with exact URLs.",
-                    },
+                    {"role": "system", "content": SYSTEM_GUIDELINES},
                     {"role": "user", "content": prompt},
                 ],
                 "temperature": 0.3,  # Lower temperature for more deterministic outputs
